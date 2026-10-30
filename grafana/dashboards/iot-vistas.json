@@ -1,0 +1,713 @@
+{
+  "uid": "iot-vistas",
+  "title": "IoT Analytics Dashboard · Vistas",
+  "tags": [
+    "nexodev",
+    "tarea7"
+  ],
+  "timezone": "browser",
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Alertas pendientes",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT COUNT(*) AS alertas FROM v_alertas_pendientes"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Alertas criticas",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT COUNT(*) AS criticas FROM v_alertas_pendientes WHERE severidad = 'critica'"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "red"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Lecturas en la ultima hora",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT SUM(lecturas_ultima_hora) AS lecturas FROM v_salud_dispositivos"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "blue"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Dispositivos activos",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT COUNT(*) AS activos FROM v_salud_dispositivos WHERE estado = 'activo'"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "green"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      }
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Temperatura por minuto (v_tendencia_24h)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 8,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "time_series",
+          "rawSql": "SELECT minuto AS time, sensor AS metric, promedio AS value\nFROM v_tendencia_24h\nWHERE tipo = 'temperatura' AND $__timeFilter(minuto)\nORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Vibracion por minuto (v_tendencia_24h)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 4,
+        "w": 8,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "time_series",
+          "rawSql": "SELECT minuto AS time, sensor AS metric, promedio AS value\nFROM v_tendencia_24h\nWHERE tipo = 'vibracion' AND $__timeFilter(minuto)\nORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "mm/s",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Energia por minuto (v_tendencia_24h)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 4,
+        "w": 8,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "time_series",
+          "rawSql": "SELECT minuto AS time, sensor AS metric, promedio AS value\nFROM v_tendencia_24h\nWHERE tipo = 'energia' AND $__timeFilter(minuto)\nORDER BY 1"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "custom": {
+            "lineWidth": 2,
+            "fillOpacity": 8
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 8,
+      "type": "table",
+      "title": "Estado de los sensores (v_estado_sensores)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 13,
+        "w": 14,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT sensor, dispositivo, valor, unidad, umbral, pct_umbral AS \"% umbral\", situacion\nFROM v_estado_sensores\nORDER BY dispositivo, sensor"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "situacion"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "normal": {
+                        "color": "green",
+                        "index": 0
+                      },
+                      "ok": {
+                        "color": "green",
+                        "index": 1
+                      },
+                      "activo": {
+                        "color": "green",
+                        "index": 2
+                      },
+                      "advertencia": {
+                        "color": "orange",
+                        "index": 3
+                      },
+                      "vigilar": {
+                        "color": "orange",
+                        "index": 4
+                      },
+                      "mantenimiento": {
+                        "color": "blue",
+                        "index": 5
+                      },
+                      "critica": {
+                        "color": "red",
+                        "index": 6
+                      },
+                      "en riesgo": {
+                        "color": "red",
+                        "index": 7
+                      },
+                      "inactivo": {
+                        "color": "gray",
+                        "index": 8
+                      },
+                      "sin datos": {
+                        "color": "gray",
+                        "index": 9
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "type": "table",
+      "title": "Salud de los dispositivos (v_salud_dispositivos)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 14,
+        "y": 13,
+        "w": 10,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT dispositivo, estado, lecturas_ultima_hora AS \"lecturas 1 h\", alertas_pendientes AS pendientes, alertas_criticas AS criticas, salud\nFROM v_salud_dispositivos\nORDER BY dispositivo"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "estado"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "normal": {
+                        "color": "green",
+                        "index": 0
+                      },
+                      "ok": {
+                        "color": "green",
+                        "index": 1
+                      },
+                      "activo": {
+                        "color": "green",
+                        "index": 2
+                      },
+                      "advertencia": {
+                        "color": "orange",
+                        "index": 3
+                      },
+                      "vigilar": {
+                        "color": "orange",
+                        "index": 4
+                      },
+                      "mantenimiento": {
+                        "color": "blue",
+                        "index": 5
+                      },
+                      "critica": {
+                        "color": "red",
+                        "index": 6
+                      },
+                      "en riesgo": {
+                        "color": "red",
+                        "index": 7
+                      },
+                      "inactivo": {
+                        "color": "gray",
+                        "index": 8
+                      },
+                      "sin datos": {
+                        "color": "gray",
+                        "index": 9
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "salud"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "normal": {
+                        "color": "green",
+                        "index": 0
+                      },
+                      "ok": {
+                        "color": "green",
+                        "index": 1
+                      },
+                      "activo": {
+                        "color": "green",
+                        "index": 2
+                      },
+                      "advertencia": {
+                        "color": "orange",
+                        "index": 3
+                      },
+                      "vigilar": {
+                        "color": "orange",
+                        "index": 4
+                      },
+                      "mantenimiento": {
+                        "color": "blue",
+                        "index": 5
+                      },
+                      "critica": {
+                        "color": "red",
+                        "index": 6
+                      },
+                      "en riesgo": {
+                        "color": "red",
+                        "index": 7
+                      },
+                      "inactivo": {
+                        "color": "gray",
+                        "index": 8
+                      },
+                      "sin datos": {
+                        "color": "gray",
+                        "index": 9
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 10,
+      "type": "table",
+      "title": "Alertas pendientes (v_alertas_pendientes)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 22,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "table",
+          "rawSql": "SELECT to_char(creada_en, 'HH24:MI:SS') AS hora, sensor, dispositivo, valor, umbral, pct_exceso AS \"% exceso\", minutos_abierta AS minutos, severidad\nFROM v_alertas_pendientes\nLIMIT 20"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "severidad"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "normal": {
+                        "color": "green",
+                        "index": 0
+                      },
+                      "ok": {
+                        "color": "green",
+                        "index": 1
+                      },
+                      "activo": {
+                        "color": "green",
+                        "index": 2
+                      },
+                      "advertencia": {
+                        "color": "orange",
+                        "index": 3
+                      },
+                      "vigilar": {
+                        "color": "orange",
+                        "index": 4
+                      },
+                      "mantenimiento": {
+                        "color": "blue",
+                        "index": 5
+                      },
+                      "critica": {
+                        "color": "red",
+                        "index": 6
+                      },
+                      "en riesgo": {
+                        "color": "red",
+                        "index": 7
+                      },
+                      "inactivo": {
+                        "color": "gray",
+                        "index": 8
+                      },
+                      "sin datos": {
+                        "color": "gray",
+                        "index": 9
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-background",
+                  "mode": "basic"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Historico: temperatura promedio y p95 por hora (mv_resumen_hora)",
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "iot-pg"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 22,
+        "w": 12,
+        "h": 9
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "iot-pg"
+          },
+          "rawQuery": true,
+          "editorMode": "code",
+          "format": "time_series",
+          "rawSql": "SELECT hora AS time, sensor || ' promedio' AS metric, promedio AS value\nFROM mv_resumen_hora\nWHERE tipo = 'temperatura' AND $__timeFilter(hora)\nUNION ALL\nSELECT hora, sensor || ' p95', p95\nFROM mv_resumen_hora\nWHERE tipo = 'temperatura' AND $__timeFilter(hora)\nORDER BY 1"
+        }
+      ],
+      "timeFrom": "3d",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "custom": {
+            "lineWidth": 1
+          }
+        },
+        "overrides": []
+      }
+    }
+  ]
+}

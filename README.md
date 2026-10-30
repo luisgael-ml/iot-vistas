@@ -2,6 +2,10 @@
 
 NexoDev Solutions · Programación de Base de Datos (TESE) · Luis Gael Monterrubio López
 
+## Documentación
+
+📄 [Abrir la documentación de la Tarea 7 (PDF)](docs/Documentacion_Tarea7.pdf)
+
 Vistas en PostgreSQL 16 que simplifican las consultas del tablero de Grafana y limitan lo que cada usuario puede ver o modificar. Las lecturas llegan en tiempo real por RabbitMQ.
 
 ```
